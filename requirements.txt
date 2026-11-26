@@ -1,0 +1,6 @@
+cadquery>=2.4
+trimesh>=4.0
+scikit-image>=0.22
+fast-simplification>=0.1.7
+shapely>=2.0
+matplotlib>=3.7
