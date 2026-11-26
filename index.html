@@ -850,6 +850,13 @@ function emptyGeometry() {
 }
 
 const stlLoader = new STLLoader();
+function loadModel() {
+  // missing model.stl is normal (fresh clone) -> empty scene, not an error
+  fetch('model.stl').then(r => {
+    if (!r.ok) { applyGeometry(emptyGeometry(), true); return; }
+    return r.arrayBuffer().then(b => applyGeometry(stlLoader.parse(b), true));
+  }).catch(() => applyGeometry(emptyGeometry(), true));
+}
 const emptyLm = localStorage.getItem('emptyModel');
 if (emptyLm !== null) {
   // scene was emptied: stay empty until model.stl is regenerated
@@ -857,15 +864,13 @@ if (emptyLm !== null) {
     const lm = r.headers.get('Last-Modified') || '';
     if (lm !== emptyLm) {
       localStorage.removeItem('emptyModel');
-      stlLoader.load('model.stl?v=' + Date.now(), applyGeometry, undefined,
-        err => { info.textContent = tr('error') + err; });
+      loadModel();
     } else {
       applyGeometry(emptyGeometry(), true);
     }
   }).catch(() => applyGeometry(emptyGeometry(), true));
 } else {
-  stlLoader.load('model.stl?v=' + Date.now(), applyGeometry, undefined,
-    err => { info.textContent = tr('error') + err; });
+  loadModel();
 }
 
 // reset view to the grid center

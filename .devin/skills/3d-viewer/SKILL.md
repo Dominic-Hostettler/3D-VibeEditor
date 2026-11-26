@@ -33,7 +33,8 @@ Selection text in clipboard looks like:
 
 ## Common model.py operations
 
-Current model in `model.py`: open-top case (cadquery). `examples/dragon.py` holds
+`model.py` is the neutral starter (small box). `examples/case.py` holds the
+open-top case (cadquery), `examples/dragon.py` holds
 an organic model (implicit SDF modeling) — same output `model.stl`.
 
 - Overall size: `L, W, H`

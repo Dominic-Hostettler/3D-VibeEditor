@@ -6,7 +6,7 @@ Details, die hier absichtlich nur skizziert sind.
 
 ## Projekt-Layout
 
-- `model.py` → aktuelles Modell (cadquery, Parameter oben im File)
+- `model.py` → Starter-Template (Parameter oben im File; `model.stl` ist gitignored — Repo liefert kein Modell)
 - `examples/*.py` → weitere Generatoren (z.B. `dragon.py` = implizites
   SDF-Modeling); aus dem Projekt-Root laufen lassen
 - **Konvention: jeder Generator schreibt `model.stl`** (binär, mm,

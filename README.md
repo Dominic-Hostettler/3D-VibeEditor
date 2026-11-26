@@ -66,12 +66,14 @@ exactly those elements.
 ## Generating models
 
 Convention: **every generator writes `model.stl`** — one output file,
-always overwritten. The viewer auto-reloads ~3 s after the file changes
-and keeps the camera.
+always overwritten (and gitignored: the repo ships *no* model; a fresh
+clone starts with an empty scene). The viewer auto-reloads ~3 s after
+the file changes and keeps the camera.
 
 | Script | Model | Technique |
 |---|---|---|
-| `model.py` | Open-top case: fillets, corner screw bosses, vent slots | cadquery (B-rep) |
+| `model.py` | Minimal starter box — your project starts here | trimesh |
+| `examples/case.py` | Open-top case: fillets, corner screw bosses, vent slots | cadquery (B-rep) |
 | `examples/dragon.py` | Dragon head: horns, teeth, scales, crest | implicit SDF + marching cubes (skimage) |
 
 Edit the parameter block at the top of a script, then run it:
@@ -89,9 +91,10 @@ for a quick headless self-check of the result.
 index.html            viewer (Three.js, selection, X-ray highlights)
 serve.py              local server :8000 (no-cache, save dialog)
 start.bat             launches the server
-model.py              main generator (cadquery case)
-model.stl             generated output (binary, mm, Z-up)
+model.py              starter generator (edit this for your project)
+model.stl             generated output — gitignored, binary, mm, Z-up
 preview.py            headless STL -> PNG renderer
+examples/case.py      cadquery example (case with fillets/bosses/vents)
 examples/dragon.py    organic-shape generator (SDF modeling)
 requirements.txt      Python dependencies
 AGENTS.md             workflow for AI agents
