@@ -72,11 +72,12 @@
   <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="#8af" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2 21 7v10l-9 5-9-5V7z"/><path d="M12 12 21 7M12 12v10M12 12 3 7"/></svg>
   <span class="brand"><b>3D</b>Viewer</span>
   <div class="menu">
-    <span>Datei</span>
+    <span><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>
     <div class="menu-items">
       <a id="imp" href="#">Import STL</a>
       <a id="dl" href="model.stl" download="model.stl">Export STL</a>
       <a id="new" href="#">Neues Modell</a>
+      <a id="langBtn" href="#">English</a>
     </div>
   </div>
   <input id="mname" class="mname" value="model">
@@ -93,6 +94,30 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+
+// ---------- i18n ----------
+const I18N = {
+  de: {
+    importStl: 'Import STL', exportStl: 'Export STL', newModel: 'Neues Modell',
+    otherLang: 'English',
+    selection: 'Auswahl', nothingSelected: 'nichts ausgewählt',
+    dims: 'Maße', points: 'Punkte', edges: 'Kanten', faces: 'Flächen',
+    loading: 'lade…', saved: 'Gespeichert ✓', cancelled: 'Abgebrochen',
+    error: 'Fehler: ', resetView: 'Ansicht zurücksetzen',
+    hint: 'Klick: auswählen · Strg+Klick: hinzufügen · Ziehen: drehen · Rad: zoomen · Rechtsklick: verschieben · Esc: leeren',
+  },
+  en: {
+    importStl: 'Import STL', exportStl: 'Export STL', newModel: 'New model',
+    otherLang: 'Deutsch',
+    selection: 'Selection', nothingSelected: 'nothing selected',
+    dims: 'Dimensions', points: 'Vertices', edges: 'Edges', faces: 'Faces',
+    loading: 'loading…', saved: 'Saved ✓', cancelled: 'Cancelled',
+    error: 'Error: ', resetView: 'Reset view',
+    hint: 'Click: select · Ctrl+Click: add · Drag: orbit · Wheel: zoom · Right-click: pan · Esc: clear',
+  },
+};
+let lang = localStorage.getItem('lang') || 'de';
+const tr = k => I18N[lang][k];
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x1e1e1e);
@@ -354,15 +379,15 @@ function selectionText() {
   const es = items.filter(i => i.t === 'e').map(i => 'E' + i.id).sort((a,b)=>+a.slice(1)-+b.slice(1));
   const fs = items.filter(i => i.t === 'f').map(i => 'F' + i.id).sort((a,b)=>+a.slice(1)-+b.slice(1));
   const lines = [];
-  if (vs.length) lines.push('Punkte: ' + vs.join(', '));
-  if (es.length) lines.push('Kanten: ' + es.join(', '));
-  if (fs.length) lines.push('Flächen: ' + fs.join(', '));
+  if (vs.length) lines.push(tr('points') + ': ' + vs.join(', '));
+  if (es.length) lines.push(tr('edges') + ': ' + es.join(', '));
+  if (fs.length) lines.push(tr('faces') + ': ' + fs.join(', '));
   return lines.join('\n');
 }
 
 function renderSelectionList() {
   if (!selection.size) {
-    selList.innerHTML = '<i style="color:#777">nichts ausgewählt</i>';
+    selList.innerHTML = `<i style="color:#777">${tr('nothingSelected')}</i>`;
     return;
   }
   const items = [...selection].map(k => ({ t: k[0], id: +k.slice(1) }));
@@ -714,13 +739,20 @@ function applyGeometry(geometry, useSavedCam = true) {
   gridObj.scale.setScalar(Math.max(1, Math.max(size.x, size.y) / 100));
   gridObj.position.y = (isFinite(box.min.y) ? box.min.y : 0) - 0.01;
 
-  info.innerHTML =
-    `Maße: ${fmt(size.x)} × ${fmt(size.y)} × ${fmt(size.z)} mm<br>` +
-    `<span class="pickall" data-t="v">Punkte: ${pointVerts.length}</span><br>` +
-    `<span class="pickall" data-t="e">Kanten: ${chains.length}</span><br>` +
-    `<span class="pickall" data-t="f">Flächen: ${faces.length}</span>`;
+  lastSize = size;
+  renderInfo();
 
   modelSize = Math.max(size.x, size.y, size.z, 50);
+}
+
+let lastSize = null;
+function renderInfo() {
+  if (!lastSize) { info.textContent = tr('loading'); return; }
+  info.innerHTML =
+    `${tr('dims')}: ${fmt(lastSize.x)} × ${fmt(lastSize.y)} × ${fmt(lastSize.z)} mm<br>` +
+    `<span class="pickall" data-t="v">${tr('points')}: ${pointVerts.length}</span><br>` +
+    `<span class="pickall" data-t="e">${tr('edges')}: ${chains.length}</span><br>` +
+    `<span class="pickall" data-t="f">${tr('faces')}: ${faces.length}</span>`;
 }
 
 // ---------- menubar ----------
@@ -735,9 +767,28 @@ document.addEventListener('click', e => {
 menuEl.querySelector('.menu-items').addEventListener('click', () => {
   menuEl.classList.remove('open');
 });
+
+function applyLang() {
+  imp.textContent = tr('importStl');
+  dl.textContent = tr('exportStl');
+  document.getElementById('new').textContent = tr('newModel');
+  document.getElementById('langBtn').textContent = tr('otherLang');
+  document.querySelector('#side h2').textContent = tr('selection');
+  document.getElementById('hint').textContent = tr('hint');
+  document.getElementById('home').title = tr('resetView');
+  renderInfo();
+  renderSelectionList();
+}
+document.getElementById('langBtn').addEventListener('click', e => {
+  e.preventDefault();
+  lang = lang === 'de' ? 'en' : 'de';
+  localStorage.setItem('lang', lang);
+  applyLang();
+});
 const mname = document.getElementById('mname');
 const dl = document.getElementById('dl');
 const imp = document.getElementById('imp');
+applyLang();
 
 const saved = localStorage.getItem('modelName');
 if (saved) mname.value = saved;
@@ -773,11 +824,11 @@ dl.addEventListener('click', async e => {
       { method: 'POST', body: buf });
     const res = await r.json();
     if (res.saved) {
-      dl.textContent = 'Gespeichert ✓';
+      dl.textContent = tr('saved');
     } else {
-      dl.textContent = 'Abgebrochen';
+      dl.textContent = tr('cancelled');
     }
-    setTimeout(() => { dl.textContent = 'Export STL'; }, 1500);
+    setTimeout(() => { dl.textContent = tr('exportStl'); }, 1500);
     return;
   } catch (err) {
     console.error('server export failed, falling back to download:', err);
@@ -807,14 +858,14 @@ if (emptyLm !== null) {
     if (lm !== emptyLm) {
       localStorage.removeItem('emptyModel');
       stlLoader.load('model.stl?v=' + Date.now(), applyGeometry, undefined,
-        err => { info.textContent = 'Fehler: ' + err; });
+        err => { info.textContent = tr('error') + err; });
     } else {
       applyGeometry(emptyGeometry(), true);
     }
   }).catch(() => applyGeometry(emptyGeometry(), true));
 } else {
   stlLoader.load('model.stl?v=' + Date.now(), applyGeometry, undefined,
-    err => { info.textContent = 'Fehler: ' + err; });
+    err => { info.textContent = tr('error') + err; });
 }
 
 // reset view to the grid center

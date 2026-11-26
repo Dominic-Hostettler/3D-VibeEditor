@@ -49,14 +49,15 @@ Selection and hover highlights render *through* the model (X-ray), so
 inner edges and back faces are visible too. Camera position and model
 name persist across reloads (localStorage).
 
-## File menu
+## Menu (☰ burger icon)
 
 - **Import STL** — load any STL file for viewing/selection (in-browser,
   nothing is uploaded)
 - **Export STL** — server-side "Save as" dialog (works in browser
   previews and sandboxed iframes where `showSaveFilePicker` fails)
-- **Neues Modell** — empty scene; stays empty until a new `model.stl`
+- **New model** — empty scene; stays empty until a new `model.stl`
   is generated or a file is imported
+- **Deutsch / English** — UI language toggle (persisted)
 
 The selection is copied to the clipboard as text
 (`Kanten: E14, E17`) — paste it into your AI chat to reference
