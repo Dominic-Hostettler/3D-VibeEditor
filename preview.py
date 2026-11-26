@@ -14,14 +14,16 @@ azim = float(sys.argv[3]) if len(sys.argv) > 3 else -60.0
 
 m = trimesh.load(path)
 if len(m.faces) > 20000:
-    m = m.simplify_quadric_decimation(0.9)
+    m = m.simplify_quadric_decimation(0.7)
 b = m.bounds
 span = (b[1] - b[0]).max()
 
 fig = plt.figure(figsize=(9, 7), facecolor="#222")
 ax = fig.add_subplot(111, projection="3d", facecolor="#222")
-ax.add_collection3d(Poly3DCollection(m.triangles, facecolor="#7d9bd6",
-                                     edgecolor="none"))
+import numpy as np
+face_rgba = np.tile(np.array([[0.49, 0.61, 0.84, 1.0]]), (len(m.triangles), 1))
+ax.add_collection3d(Poly3DCollection(m.triangles, facecolors=face_rgba,
+                                     shade=True))
 c = (b[0] + b[1]) / 2
 ax.set_xlim(c[0] - span * 0.7, c[0] + span * 0.7)
 ax.set_ylim(c[1] - span * 0.7, c[1] + span * 0.7)
