@@ -26,6 +26,12 @@ tools.*
 
 *Vertex, edge and face selection. IDs are copied to the clipboard.*
 
+![Banana cookie cutter from a silhouette image](docs/screenshot-silhouette.png)
+
+*Image-driven modeling: the banana silhouette (right) is traced from a
+reference image; a teardrop-profile wall is swept along the outline to
+make a cookie cutter (`examples/banana_cutter.py`).*
+
 ## Requirements
 
 Python 3.11+
@@ -78,6 +84,7 @@ file timestamp every 3 s and reloads on change, keeping the camera.
 | `model.py` | Starter template (box) — edit for your own project |
 | `examples/case.py` | Open-top case with fillets, screw bosses, vent slots (cadquery) |
 | `examples/dragon.py` | Dragon head via implicit SDF modeling (skimage marching cubes) |
+| `examples/banana_cutter.py` | Cookie cutter: outline traced from `banana_silhouette.png`, teardrop wall swept along it |
 
 Parameters sit at the top of each script:
 
@@ -99,7 +106,7 @@ serve.py              local server :8000 (no-cache, save dialog)
 start.bat             launches the server
 model.py              starter generator
 preview.py            headless STL -> PNG renderer
-examples/             case.py, dragon.py
+examples/             case.py, dragon.py, banana_cutter.py + silhouette png
 docs/                 screenshots
 .devin/skills/        agent playbook + chain_report.py (ID resolver)
 AGENTS.md             agent workflow notes
