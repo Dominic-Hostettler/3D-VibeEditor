@@ -24,6 +24,12 @@ implicit SDF field + marching cubes (`examples/dragon.py`). Just don't
 expect sculpting-tool quality: mechanical/parametric work is where it
 shines.*
 
+![Selecting a vertex, an edge and a face](docs/screenshot-selection.png)
+
+*Select vertices, edges and faces to tell the AI exactly what you're
+talking about — the selection is copied to the clipboard as IDs
+(`E37, F14, P167`) and can be pasted straight into the chat.*
+
 ## Quick start
 
 ```bat
