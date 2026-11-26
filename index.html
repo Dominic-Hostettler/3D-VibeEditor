@@ -101,6 +101,7 @@ const I18N = {
     importStl: 'Import STL', exportStl: 'Export STL', newModel: 'Neues Modell',
     otherLang: 'English',
     selection: 'Auswahl', nothingSelected: 'nichts ausgewählt',
+    copiedNote: 'Auswahl in Zwischenablage kopiert',
     dims: 'Maße', points: 'Punkte', edges: 'Kanten', faces: 'Flächen',
     loading: 'lade…', saved: 'Gespeichert ✓', cancelled: 'Abgebrochen',
     error: 'Fehler: ', resetView: 'Ansicht zurücksetzen',
@@ -110,6 +111,7 @@ const I18N = {
     importStl: 'Import STL', exportStl: 'Export STL', newModel: 'New model',
     otherLang: 'Deutsch',
     selection: 'Selection', nothingSelected: 'nothing selected',
+    copiedNote: 'Selection copied to clipboard',
     dims: 'Dimensions', points: 'Points', edges: 'Edges', faces: 'Faces',
     loading: 'loading…', saved: 'Saved ✓', cancelled: 'Cancelled',
     error: 'Error: ', resetView: 'Reset view',
@@ -410,6 +412,10 @@ function renderSelectionList() {
       selList.appendChild(mk('F', i.id, fmt(f.area) + ' mm²'));
     }
   }
+  const note = document.createElement('div');
+  note.style.cssText = 'color:#777;font-size:11px;margin-top:8px';
+  note.textContent = tr('copiedNote');
+  selList.appendChild(note);
   copySelection();
 }
 
